@@ -3,19 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ejercicio Práctico: Animaciones en Flutter</title>
+    <title>Exposición: Animaciones en Flutter</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
-    <!-- Chosen Palette: Calm Beige & Friendly Blue -->
-    <!-- Application Structure Plan: La aplicación está diseñada como un plan de lección interactivo para guiar tu exposición. Comienza con el concepto central del ejercicio ("Flutter Pet"), luego desglosa la lógica de conexión entre animaciones implícitas y explícitas de forma visual. La sección principal es un demo interactivo que muestra el efecto combinado, junto a un explorador de código con pestañas. Finalmente, resume los puntos clave. Esta estructura lineal y progresiva está pensada para construir el conocimiento de manera lógica, facilitando que la clase entienda cómo dos conceptos distintos se unen para crear una experiencia de usuario rica y coherente. -->
-    <!-- Visualization & Content Choices: 
-        1. Concepto ("Flutter Pet"): Report Info -> Ejercicio práctico y divertido. Goal -> Introducir el tema de forma memorable. Viz/Presentation Method -> Tarjetas de texto con iconos. Interaction -> Ninguna. Justification -> Presenta el objetivo del ejercicio de forma clara y atractiva. Library/Method -> HTML/Tailwind.
-        2. Lógica de Conexión: Report Info -> Explicar cómo se unen las animaciones. Goal -> Visualizar el flujo de control. Viz/Presentation Method -> Diagrama de flujo creado con divs, bordes y flechas. Interaction -> Estático. Justification -> Un diagrama es más intuitivo que el texto para explicar procesos técnicos, mostrando cómo `setState` actúa como el punto de unión conceptual. Library/Method -> HTML/Tailwind.
-        3. Demo Interactivo y Código: Report Info -> Combinar ambos tipos de animación en una pantalla. Goal -> Demostrar el resultado visual y proveer el código. Viz/Presentation Method -> Un área de demostración visual junto a un explorador de código con pestañas. Interaction -> El usuario presiona botones que alteran el estado del contenedor (simulando animación implícita), mientras un elemento interno tiene una animación en bucle (simulando animación explícita). El usuario puede cambiar entre pestañas para ver el código correspondiente. Justification -> Conecta la teoría con la práctica de forma tangible. La separación del código en pestañas (Implícito, Explícito, Completo) reduce la carga cognitiva y permite un aprendizaje enfocado. Library/Method -> HTML/Tailwind/Vanilla JS.
-    -->
-    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
     <style>
         body {
             font-family: 'Inter', sans-serif;
@@ -38,7 +30,7 @@
         .code-string { color: #98c379; }
         .code-number { color: #d19a66; }
         .tab-active {
-            background-color: #3b82f6;
+            background-color: #1f2937;
             color: white;
         }
         .tab-inactive {
@@ -55,103 +47,142 @@
         #pet-container {
             transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
         }
+        .hidden-section {
+            display: none;
+        }
+        .rotate-icon {
+            animation: spin 2s linear infinite;
+        }
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        .progress-bar {
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        /* Make sure the image is responsive */
+        img {
+            max-width: 100%;
+            height: auto;
+        }
     </style>
 </head>
 <body class="text-stone-800">
 
     <div class="container mx-auto p-4 sm:p-6 md:p-8 max-w-6xl">
-        
-        <header class="text-center mb-12">
-            <h1 class="text-4xl md:text-5xl font-bold text-blue-600 mb-2">El Duelo de Animaciones</h1>
-            <p class="text-xl text-stone-600">Uniendo Animaciones Implícitas y Explícitas en Flutter</p>
-        </header>
 
-        <main>
-            <!-- Sección 1: El Ejercicio Propuesto -->
-            <section id="exercise" class="mb-16">
-                <h2 class="text-3xl font-bold mb-6 text-center">Propuesta de Ejercicio: "Flutter Pet" 🐾</h2>
-                <p class="text-lg text-center text-stone-700 max-w-3xl mx-auto mb-8">
-                    Para unir los temas, propongo un ejercicio divertido: crear una mascota virtual. Esta mascota reaccionará a nuestras interacciones de dos maneras distintas, usando una animación implícita para cambios de estado y una explícita para darle "vida" constante.
-                </p>
-                <div class="grid md:grid-cols-2 gap-8">
-                    <div class="bg-white p-6 rounded-lg shadow-md border border-stone-200">
-                        <h3 class="text-2xl font-bold mb-3 text-blue-600">Animación Implícita (La Reacción)</h3>
-                        <p class="text-stone-600">Usaremos un <code class="bg-stone-200 text-sm p-1 rounded">AnimatedContainer</code>. Cuando el usuario interactúe con la mascota (ej. alimentarla), cambiaremos propiedades como el color, tamaño o forma del contenedor. Flutter animará la transición automáticamente. Es simple, directo y reactivo.</p>
-                        <div class="text-4xl text-center mt-4">👆➡️🎁</div>
-                    </div>
-                    <div class="bg-white p-6 rounded-lg shadow-md border border-stone-200">
-                        <h3 class="text-2xl font-bold mb-3 text-emerald-600">Animación Explícita (La Vida)</h3>
-                        <p class="text-stone-600">Usaremos un <code class="bg-stone-200 text-sm p-1 rounded">AnimationController</code> para crear un efecto de "respiración" o "latido" constante en la mascota. Esta animación estará en un bucle y no dependerá de las acciones del usuario. Nos da control total sobre la animación.</p>
-                         <div class="text-4xl text-center mt-4">❤️🔁❤️</div>
-                    </div>
-                </div>
-            </section>
+        <!-- Navegación por Secciones -->
+        <nav class="mb-8">
+            <ul class="flex justify-center p-2 bg-white rounded-xl shadow-lg border border-stone-200">
+                <li class="flex-1 text-center">
+                    <button id="tab-intro" data-target="section-intro" class="w-full px-4 py-3 font-semibold text-sm sm:text-base rounded-lg transition-colors tab-active">Introducción</button>
+                </li>
+                <li class="flex-1 text-center">
+                    <button id="tab-demo" data-target="section-demo" class="w-full px-4 py-3 font-semibold text-sm sm:text-base rounded-lg transition-colors tab-inactive">Demo: AnimatedContainer</button>
+                </li>
+                <li class="flex-1 text-center">
+                    <button id="tab-challenge" data-target="section-challenge" class="w-full px-4 py-3 font-semibold text-sm sm:text-base rounded-lg transition-colors tab-inactive">Ejercicio Práctico</button>
+                </li>
+            </ul>
+        </nav>
 
-            <!-- Sección 2: ¿Cómo se Conectan? -->
-            <section id="connection" class="mb-16 bg-white p-8 rounded-lg shadow-lg">
-                <h2 class="text-3xl font-bold mb-8 text-center">La Lógica de Conexión: El Rol de `setState`</h2>
-                <p class="text-lg text-center text-stone-700 max-w-3xl mx-auto mb-10">
-                    Aunque parezcan diferentes, ambas animaciones coexisten y se complementan en el mismo widget. El `setState` es el punto de partida para la animación implícita, mientras que la animación explícita vive en su propio ciclo de vida, iniciado en `initState`. No se controlan entre sí, pero su efecto combinado crea la magia.
-                </p>
-                <div class="flex flex-col md:flex-row items-center justify-center gap-4 text-center">
-                    <div class="bg-amber-100 p-4 rounded-lg shadow">
-                        <p class="font-bold">1. Acción del Usuario</p>
-                        <p class="text-sm">Click en un botón</p>
-                        <p class="text-2xl mt-2">👇</p>
-                    </div>
-                    <div class="bg-stone-100 p-4 rounded-lg shadow font-mono font-bold text-red-600">
-                        setState()
-                    </div>
-                    <div class="text-2xl mt-2 md:mt-0">👉</div>
-                    <div class="flex flex-col gap-4">
-                        <div class="bg-blue-100 p-4 rounded-lg shadow">
-                            <p class="font-bold text-blue-800">Animación Implícita</p>
-                            <p class="text-sm text-blue-700">El <code class="text-sm">AnimatedContainer</code> detecta el cambio de estado y anima la transición a los nuevos valores (ej. color, tamaño).</p>
+        <main class="bg-white p-8 rounded-xl shadow-lg border border-stone-200">
+
+            <!-- Sección 1: Introducción -->
+            <section id="section-intro">
+                <header class="text-center mb-12">
+                    <h1 class="text-4xl md:text-5xl font-bold text-blue-600 mb-2">El Duelo de Animaciones</h1>
+                    <p class="text-xl text-stone-600">Uniendo Animaciones Implícitas y Explícitas en Flutter</p>
+                </header>
+                <div class="prose max-w-none text-stone-700">
+                    <h2 class="text-2xl font-bold mt-8 mb-4">Propuesta de Ejercicio: "Flutter Pet" 🐾</h2>
+                    <p>Para unir los temas, propongo un ejercicio divertido: crear una mascota virtual. Esta mascota reaccionará a nuestras interacciones de dos maneras distintas, usando una animación implícita para cambios de estado y una explícita para darle "vida" constante.</p>
+                    <div class="grid lg:grid-cols-2 gap-8 my-8">
+                        <div>
+                            <h3 class="text-xl font-bold mb-2">Animación Implícita (La Reacción)</h3>
+                            <p>Usaremos un <code class="bg-stone-200 p-1 rounded font-semibold text-sm">AnimatedContainer</code>. Cuando el usuario interactúe con la mascota (ej. alimentarla), cambiaremos propiedades como el color, tamaño o forma del contenedor. Flutter animará la transición automáticamente. Es simple, directo y reactivo.</p>
+                            <p class="text-4xl my-4">👆➡️🎁</p>
+                            <div class="w-full text-center">
+                                
+                            </div>
                         </div>
-                        <div class="bg-emerald-100 p-4 rounded-lg shadow">
-                            <p class="font-bold text-emerald-800">Animación Explícita</p>
-                            <p class="text-sm text-emerald-700">El <code class="text-sm">AnimationController</code> continúa su bucle (ej. latido), ignorando el `setState` porque su valor no depende de la acción del usuario.</p>
+                        <div>
+                            <h3 class="text-xl font-bold mb-2">Animación Explícita (La Vida)</h3>
+                            <p>Usaremos un <code class="bg-stone-200 p-1 rounded font-semibold text-sm">AnimationController</code> para crear un efecto de "respiración" o "latido" constante en la mascota. Esta animación estará en un bucle y no dependerá de las acciones del usuario. Nos da control total sobre la animación.</p>
+                            <p class="text-4xl my-4">❤️🔁❤️</p>
+                            <div class="w-full text-center">
+                                
+                            </div>
                         </div>
                     </div>
-                </div>
-            </section>
-            
-            <!-- Sección 3: Demo y Código -->
-            <section id="demo">
-                <h2 class="text-3xl font-bold mb-8 text-center">¡Vamos a Probarlo!</h2>
-                <div class="grid lg:grid-cols-2 gap-8">
                     
-                    <!-- Columna de Demostración Visual -->
-                    <div class="bg-white p-6 rounded-lg shadow-lg flex flex-col items-center justify-center min-h-[400px]">
-                        <h3 class="text-2xl font-bold mb-4">Demo Interactivo de "Flutter Pet"</h3>
-                        
-                        <div id="pet-container" class="w-40 h-40 bg-blue-400 rounded-2xl flex items-center justify-center shadow-2xl">
-                            <div id="pet-core" class="w-16 h-16 bg-white/50 rounded-full animate-pulse-explicit"></div>
+                    <h3 class="text-xl font-bold mt-8 mb-4">La Lógica de Conexión: El Rol de `setState`</h3>
+                    <p>Aunque parezcan diferentes, ambas animaciones coexisten y se complementan en el mismo widget. El `setState` es el punto de partida para la animación implícita, mientras que la animación explícita vive en su propio ciclo de vida, iniciado en `initState`. No se controlan entre sí, pero su efecto combinado crea la magia.</p>
+                    
+                    <div class="bg-blue-100 p-6 rounded-lg my-6">
+                        <div class="flex items-center space-x-4 mb-4">
+                            <span class="bg-blue-500 text-white rounded-full p-2 font-bold flex-shrink-0">1</span>
+                            <p class="text-lg font-semibold text-blue-800">Acción del Usuario</p>
                         </div>
-
-                        <p class="text-stone-600 mt-4 mb-4 text-center">Interactúa con tu mascota:</p>
-                        <div class="flex flex-wrap gap-3 justify-center">
-                            <button id="feed-btn" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg transition-colors">Alimentar 🍎</button>
-                            <button id="play-btn" class="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded-lg transition-colors">Jugar 🎾</button>
-                            <button id="sleep-btn" class="bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-2 px-4 rounded-lg transition-colors">Dormir 🌙</button>
-                            <button id="reset-btn" class="bg-stone-400 hover:bg-stone-500 text-white font-bold py-2 px-4 rounded-lg transition-colors">Reset</button>
+                        <div class="ml-12 border-l-2 border-dashed border-blue-400 pl-4">
+                            <p class="text-lg font-medium text-blue-700">Click en un botón</p>
+                            <p class="text-xl text-blue-600">👇</p>
+                            <p class="text-lg font-medium text-blue-700">setState()</p>
+                            <p class="text-xl text-blue-600">👉</p>
+                            <p class="font-bold text-lg text-blue-900">Animación Implícita</p>
+                            <p class="text-sm text-blue-800">El <code class="bg-stone-200 p-1 rounded">AnimatedContainer</code> detecta el cambio de estado y anima la transición a los nuevos valores (ej. color, tamaño).</p>
                         </div>
+                        <div class="flex items-center space-x-4 mt-6">
+                             <span class="bg-blue-500 text-white rounded-full p-2 font-bold flex-shrink-0">2</span>
+                             <p class="font-bold text-lg text-blue-900">Animación Explícita</p>
+                        </div>
+                        <p class="ml-12 text-sm text-blue-800">El <code class="bg-stone-200 p-1 rounded">AnimationController</code> continúa su bucle (ej. latido), ignorando el `setState` porque su valor no depende de la acción del usuario.</p>
                     </div>
 
-                    <!-- Columna de Código -->
-                    <div class="bg-white p-6 rounded-lg shadow-lg">
-                        <h3 class="text-2xl font-bold mb-4">Explorador de Código</h3>
-                        <div class="flex border-b border-stone-200 mb-4">
-                            <button data-tab="implicit" class="code-tab tab-active flex-1 py-2 px-4 font-semibold rounded-t-lg transition-colors">Implícito</button>
-                            <button data-tab="explicit" class="code-tab tab-inactive flex-1 py-2 px-4 font-semibold rounded-t-lg transition-colors">Explícito</button>
-                            <button data-tab="full" class="code-tab tab-inactive flex-1 py-2 px-4 font-semibold rounded-t-lg transition-colors">Completo</button>
+                    <h2 class="text-2xl font-bold mt-8 mb-4 text-center">¡Vamos a Probarlo!</h2>
+                </div>
+            </section>
+
+            <!-- Sección 2: Demo -->
+            <section id="section-demo" class="hidden-section">
+                <div class="text-center mb-8">
+                    <h2 class="text-3xl font-bold mb-2">Demo Interactivo de "Flutter Pet"</h2>
+                    <p class="text-lg text-stone-600">Interactúa con tu mascota:</p>
+                </div>
+                <div class="bg-white p-8 rounded-lg shadow-lg">
+                    <div class="grid lg:grid-cols-2 gap-8">
+                    
+                        <!-- Columna de Demostración Visual -->
+                        <div class="p-6 rounded-lg flex flex-col items-center justify-center min-h-[400px]">
+                            <h3 class="text-2xl font-bold mb-4">Demo Interactivo de "Flutter Pet"</h3>
+                            
+                            <div id="pet-container" class="w-40 h-40 bg-blue-400 rounded-2xl flex items-center justify-center shadow-2xl">
+                                <div id="pet-core" class="w-16 h-16 bg-white/50 rounded-full animate-pulse-explicit"></div>
+                            </div>
+
+                            <p class="text-stone-600 mt-4 mb-4 text-center">Interactúa con tu mascota:</p>
+                            <div class="flex flex-wrap gap-3 justify-center">
+                                <button id="feed-btn" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg transition-colors">Alimentar 🍎</button>
+                                <button id="play-btn" class="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded-lg transition-colors">Jugar 🎾</button>
+                                <button id="sleep-btn" class="bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-2 px-4 rounded-lg transition-colors">Dormir 🌙</button>
+                                <button id="reset-btn" class="bg-stone-400 hover:bg-stone-500 text-white font-bold py-2 px-4 rounded-lg transition-colors">Reset</button>
+                            </div>
                         </div>
 
-                        <div id="code-content">
-                            <!-- Código Implícito -->
-                            <div id="implicit-code" class="code-panel">
-                                <p class="text-sm text-stone-600 mb-4">Esta parte se centra en el <code class="bg-stone-200 p-1 rounded">AnimatedContainer</code> y cómo reacciona a los cambios de estado activados por los botones.</p>
-                                <div class="code-block">
+                        <!-- Columna de Código -->
+                        <div class="p-6 rounded-lg">
+                            <h3 class="text-2xl font-bold mb-4">Explorador de Código</h3>
+                            <div class="flex border-b border-stone-200 mb-4">
+                                <button data-tab="implicit" class="code-tab tab-active flex-1 py-2 px-4 font-semibold rounded-t-lg transition-colors">Implícito</button>
+                                <button data-tab="explicit" class="code-tab tab-inactive flex-1 py-2 px-4 font-semibold rounded-t-lg transition-colors">Explícito</button>
+                                <button data-tab="full" class="code-tab tab-inactive flex-1 py-2 px-4 font-semibold rounded-t-lg transition-colors">Completo</button>
+                            </div>
+
+                            <div id="code-content">
+                                <!-- Código Implícito -->
+                                <div id="implicit-code" class="code-panel">
+                                    <p class="text-sm text-stone-600 mb-4">Esta parte se centra en el <code class="bg-stone-200 p-1 rounded">AnimatedContainer</code> y cómo reacciona a los cambios de estado activados por los botones.</p>
+                                    <div class="code-block">
 <pre><code><span class="code-comment">// Variables de estado para las propiedades</span>
 <span class="code-keyword">double</span> _width = 150;
 <span class="code-keyword">double</span> _height = 150;
@@ -179,12 +210,12 @@
     _color = <span class="code-class">Colors</span>.green;
   });
 }</code></pre>
+                                    </div>
                                 </div>
-                            </div>
-                            <!-- Código Explícito -->
-                            <div id="explicit-code" class="code-panel hidden">
-                                <p class="text-sm text-stone-600 mb-4">Aquí nos enfocamos en el <code class="bg-stone-200 p-1 rounded">AnimationController</code> que crea el "latido" constante, independiente de la interacción del usuario.</p>
-                                <div class="code-block">
+                                <!-- Código Explícito -->
+                                <div id="explicit-code" class="code-panel hidden">
+                                    <p class="text-sm text-stone-600 mb-4">Aquí nos enfocamos en el <code class="bg-stone-200 p-1 rounded">AnimationController</code> que crea el "latido" constante, independiente de la interacción del usuario.</p>
+                                    <div class="code-block">
 <pre><code><span class="code-comment">// Añadir el Mixin necesario</span>
 <span class="code-keyword">class</span> <span class="code-class">_PetScreenState</span> <span class="code-keyword">extends</span> <span class="code-class">State&lt;PetScreen&gt;</span>
   <span class="code-keyword">with</span> <span class="code-class">SingleTickerProviderStateMixin</span> {
@@ -310,43 +341,170 @@
                 </div>
             </section>
             
-            <hr class="my-16 border-stone-300">
+            <!-- Sección 3: Ejercicio Práctico -->
+            <section id="section-challenge" class="hidden-section">
+                <div class="text-center mb-8">
+                    <h2 class="text-3xl font-bold mb-2">¡Reto para la Clase!</h2>
+                    <p class="text-lg text-stone-600">Demuestra que puedes combinar ambas técnicas</p>
+                </div>
+                <div class="bg-blue-100 p-8 rounded-lg shadow-xl text-center">
+                    <h3 class="text-2xl font-bold mb-6 text-blue-600">Creando un "Pantalla de Carga Mágica" ✨</h3>
+                    <p class="text-lg text-blue-700 max-w-3xl mx-auto mb-8">
+                        El objetivo es crear una pantalla de carga para nuestra app "Flutter Pet" que combine ambos tipos de animación. El progreso de la carga se llenará suavemente, mientras un icono mágico gira sin parar.
+                    </p>
+                    <div class="bg-white p-6 rounded-lg shadow-md border border-stone-200 inline-block text-left">
+                        <ul class="list-disc list-inside space-y-4 text-stone-700">
+                            <li>
+                                <p class="font-semibold text-xl text-stone-900">1. Animación Implícita (La Barra de Carga):</p>
+                                <p>Crea un <code class="bg-stone-200 p-1 rounded">AnimatedContainer</code> que actúe como una barra de progreso. Su ancho dependerá de una variable de estado que irá de 0.0 a 1.0.</p>
+                            </li>
+                            <li>
+                                <p class="font-semibold text-xl text-stone-900">2. Animación Explícita (El Ícono Mágico):</p>
+                                <p>Anida un ícono (como una estrella o una varita) dentro de la barra de carga. Usa un <code class="bg-stone-200 p-1 rounded">AnimationController</code> y un <code class="bg-stone-200 p-1 rounded">RotationTransition</code> para hacer que este ícono gire en un bucle continuo.</p>
+                            </li>
+                            <li>
+                                <p class="font-semibold text-xl text-stone-900">3. La Conexión Mágica:</p>
+                                <p>Implementa un botón que, al presionarlo, incremente la variable de la barra de progreso usando <code class="bg-stone-200 p-1 rounded">setState</code>. ¡Observa cómo la barra avanza suavemente (implícito) mientras el ícono no deja de girar (explícito)!</p>
+                            </li>
+                            <li>
+                                <p class="font-semibold text-xl text-stone-900">4. Requisitos Adicionales:</p>
+                                <ul class="list-disc list-inside ml-6 space-y-2 text-stone-600">
+                                    <li>El ícono debe girar incluso si la barra de carga no está avanzando.</li>
+                                    <li>La barra de carga debe tener un borde redondeado y cambiar de color al llegar al 100%.</li>
+                                    <li>Añade un texto de porcentaje que se actualice con la barra de carga.</li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <div class="mt-8">
+                        <p class="mb-4 text-stone-700">Introduce la contraseña para ver la solución:</p>
+                        <input type="password" id="password-input" class="p-2 border border-stone-300 rounded-lg text-center focus:outline-none focus:border-blue-500 mb-4" placeholder="Contraseña">
+                        <button id="show-solution-btn" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg transition-colors shadow-md">Ver Solución</button>
+                    </div>
 
-            <!-- Sección de Reto para la Clase -->
-            <section id="challenge-section" class="bg-blue-100 p-8 rounded-lg shadow-xl text-center">
-                <h2 class="text-3xl font-bold mb-4 text-blue-800">¡Reto para la Clase!</h2>
-                <h3 class="text-2xl font-bold mb-6 text-blue-600">Creando un "Pantalla de Carga Mágica" ✨</h3>
-                <p class="text-lg text-blue-700 max-w-3xl mx-auto mb-8">
-                    El objetivo es crear una pantalla de carga para nuestra app "Flutter Pet" que combine ambos tipos de animación. El progreso de la carga se llenará suavemente, mientras un icono mágico gira sin parar.
-                </p>
-                <div class="bg-white p-6 rounded-lg shadow-md border border-stone-200 inline-block text-left">
-                    <ul class="list-disc list-inside space-y-4 text-stone-700">
-                        <li>
-                            <p class="font-semibold text-xl text-stone-900">1. Animación Implícita (La Barra de Carga):</p>
-                            <p>Crea un <code class="bg-stone-200 p-1 rounded">AnimatedContainer</code> que actúe como una barra de progreso. Su ancho dependerá de una variable de estado que irá de 0.0 a 1.0.</p>
-                        </li>
-                        <li>
-                            <p class="font-semibold text-xl text-stone-900">2. Animación Explícita (El Ícono Mágico):</p>
-                            <p>Anida un ícono (como una estrella o una varita) dentro de la barra de carga. Usa un <code class="bg-stone-200 p-1 rounded">AnimationController</code> y un <code class="bg-stone-200 p-1 rounded">RotationTransition</code> para hacer que este ícono gire en un bucle continuo.</p>
-                        </li>
-                        <li>
-                            <p class="font-semibold text-xl text-stone-900">3. La Conexión Mágica:</p>
-                            <p>Implementa un botón que, al presionarlo, incremente la variable de la barra de progreso usando <code class="bg-stone-200 p-1 rounded">setState</code>. ¡Observa cómo la barra avanza suavemente (implícito) mientras el ícono no deja de girar (explícito)!</p>
-                        </li>
-                        <li>
-                            <p class="font-semibold text-xl text-stone-900">4. Requisitos Adicionales:</p>
-                            <ul class="list-disc list-inside ml-6 space-y-2 text-stone-600">
-                                <li>El ícono debe girar incluso si la barra de carga no está avanzando.</li>
-                                <li>La barra de carga debe tener un borde redondeado y cambiar de color al llegar al 100%.</li>
-                                <li>Añade un texto de porcentaje que se actualice con la barra de carga.</li>
-                            </ul>
-                        </li>
-                    </ul>
+                    <div id="solution-container" class="mt-8 bg-white p-8 rounded-lg shadow-lg hidden">
+                        <h3 class="text-2xl font-bold mb-4">Solución del Reto</h3>
+                        <div class="lg:flex lg:space-x-8">
+                            <!-- Columna de Demostración Visual de la Solución -->
+                            <div class="p-6 rounded-lg flex flex-col items-center justify-center min-h-[400px] lg:w-1/2">
+                                <h4 class="text-xl font-bold mb-4">Demo de "Pantalla de Carga Mágica"</h4>
+                                
+                                <div class="w-full max-w-xs bg-stone-200 rounded-full h-8 overflow-hidden shadow-inner flex items-center justify-start">
+                                    <div id="progress-bar" class="progress-bar h-full bg-emerald-500 rounded-full flex items-center justify-end relative" style="width: 0%;">
+                                         <div class="absolute inset-0 flex items-center justify-center text-sm font-semibold text-white z-10" id="progress-text">0%</div>
+                                         <div id="magic-icon" class="absolute right-0 p-1 bg-stone-100 rounded-full shadow-lg -mr-4 rotate-icon">
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 text-blue-500">
+                                                <path fill-rule="evenodd" d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.007 5.404.433c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.665 21.16c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.433 2.082-5.007z" clip-rule="evenodd" />
+                                            </svg>
+                                         </div>
+                                    </div>
+                                </div>
+                                <button id="simulate-progress-btn" class="mt-6 bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg transition-colors">Simular Carga</button>
+                            </div>
+
+                            <!-- Columna de Código de la Solución -->
+                            <div class="p-6 rounded-lg lg:w-1/2">
+                                <h4 class="text-xl font-bold mb-4">Código de la Solución</h4>
+                                <div class="code-block">
+<pre><code><span class="code-keyword">import</span> <span class="code-string">'package:flutter/material.dart'</span>;
+<span class="code-keyword">import</span> <span class="code-string">'package:flutter/material.dart'</span> <span class="code-keyword">as</span> <span class="code-class">material</span>;
+
+<span class="code-keyword">class</span> <span class="code-class">LoadingScreen</span> <span class="code-keyword">extends</span> <span class="code-class">StatefulWidget</span> {
+  <span class="code-keyword">const</span> <span class="code-function">LoadingScreen</span>({<span class="code-keyword">super</span>.key});
+
+  @override
+  <span class="code-class">State&lt;LoadingScreen&gt;</span> <span class="code-function">createState</span>() => <span class="code-class">_LoadingScreenState</span>();
+}
+
+<span class="code-keyword">class</span> <span class="code-class">_LoadingScreenState</span> <span class="code-keyword">extends</span> <span class="code-class">State&lt;LoadingScreen&gt;</span>
+    <span class="code-keyword">with</span> <span class="code-class">SingleTickerProviderStateMixin</span> {
+  <span class="code-comment">// Animación Implícita: controla el ancho de la barra de progreso</span>
+  <span class="code-keyword">double</span> _progress = <span class="code-number">0.0</span>;
+
+  <span class="code-comment">// Animación Explícita: controla el giro del ícono mágico</span>
+  <span class="code-keyword">late</span> <span class="code-class">AnimationController</span> _iconController;
+
+  @override
+  <span class="code-keyword">void</span> <span class="code-function">initState</span>() {
+    <span class="code-keyword">super</span>.<span class="code-function">initState</span>();
+    _iconController = <span class="code-class">AnimationController</span>(
+      vsync: <span class="code-keyword">this</span>,
+      duration: <span class="code-keyword">const</span> <span class="code-class">Duration</span>(seconds: <span class="code-number">2</span>),
+    )..repeat();
+  }
+
+  @override
+  <span class="code-keyword">void</span> <span class="code-function">dispose</span>() {
+    _iconController.dispose();
+    <span class="code-keyword">super</span>.<span class="code-function">dispose</span>();
+  }
+
+  <span class="code-keyword">void</span> <span class="code-function">_simulateProgress</span>() {
+    <span class="code-keyword">if</span> (_progress < <span class="code-number">1.0</span>) {
+      <span class="code-function">setState</span>(() {
+        _progress = _progress + <span class="code-number">0.2</span>;
+        <span class="code-keyword">if</span> (_progress > <span class="code-number">1.0</span>) _progress = <span class="code-number">1.0</span>;
+      });
+    }
+  }
+
+  @override
+  <span class="code-keyword">Widget</span> <span class="code-function">build</span>(<span class="code-class">BuildContext</span> context) {
+    <span class="code-keyword">return</span> <span class="code-class">Center</span>(
+      child: <span class="code-class">Column</span>(
+        mainAxisAlignment: <span class="code-class">material</span>.MainAxisAlignment.center,
+        children: [
+          <span class="code-class">Stack</span>(
+            children: [
+              <span class="code-class">Container</span>(
+                width: <span class="code-number">300</span>,
+                height: <span class="code-number">20</span>,
+                decoration: <span class="code-class">BoxDecoration</span>(
+                  color: <span class="code-class">Colors</span>.grey[<span class="code-number">300</span>],
+                  borderRadius: <span class="code-class">BorderRadius</span>.circular(<span class="code-number">10</span>),
+                ),
+              ),
+              <span class="code-class">AnimatedContainer</span>(
+                width: <span class="code-number">300</span> * _progress,
+                height: <span class="code-number">20</span>,
+                duration: <span class="code-keyword">const</span> <span class="code-class">Duration</span>(milliseconds: <span class="code-number">500</span>),
+                curve: <span class="code-class">Curves</span>.easeInOut,
+                decoration: <span class="code-class">BoxDecoration</span>(
+                  color: _progress == <span class="code-number">1.0</span> ? <span class="code-class">Colors</span>.blueAccent : <span class="code-class">Colors</span>.green,
+                  borderRadius: <span class="code-class">BorderRadius</span>.circular(<span class="code-number">10</span>),
+                ),
+                alignment: <span class="code-class">Alignment</span>.centerRight,
+                child: <span class="code-class">RotationTransition</span>(
+                  turns: _iconController,
+                  child: <span class="code-class">Icon</span>(
+                    _progress == <span class="code-number">1.0</span> ? <span class="code-class">Icons</span>.check_circle : <span class="code-class">Icons</span>.stars,
+                    color: <span class="code-class">Colors</span>.white,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          <span class="code-class">Text</span>(<span class="code-string">'${(_progress * <span class="code-number">100</span>).toInt()}%'</span>),
+          <span class="code-class">ElevatedButton</span>(
+            onPressed: _simulateProgress,
+            child: <span class="code-keyword">const</span> <span class="code-class">Text</span>(<span class="code-string">'Simular Carga'</span>),
+          ),
+        ],
+      ),
+    );
+  }
+}</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </section>
+        </main>
 
-            <footer class="text-center mt-16 pt-8 border-t border-stone-200">
-            <p class="text-stone-500">¡Mucha suerte en tu exposición, Jennifer! Con este ejercicio, la clase verá claramente el poder de combinar ambas técnicas de animación.</p>
+        <footer class="text-center mt-16 pt-8 border-t border-stone-200">
+            <p class="text-stone-500">¡Mucha suerte en tu exposición, Jennifer!</p>
         </footer>
 
     </div>
@@ -354,7 +512,6 @@
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             const petContainer = document.getElementById('pet-container');
-            
             const feedBtn = document.getElementById('feed-btn');
             const playBtn = document.getElementById('play-btn');
             const sleepBtn = document.getElementById('sleep-btn');
@@ -387,12 +544,42 @@
                 applyState(originalState);
             });
 
-            const tabs = document.querySelectorAll('.code-tab');
-            const panels = document.querySelectorAll('.code-panel');
+            const tabButtons = document.querySelectorAll('button[data-target]');
+            const sections = document.querySelectorAll('section');
+            const codeTabs = document.querySelectorAll('.code-tab');
+            const codePanels = document.querySelectorAll('.code-panel');
+            const showSolutionBtn = document.getElementById('show-solution-btn');
+            const solutionContainer = document.getElementById('solution-container');
+            const passwordInput = document.getElementById('password-input');
+            const progressBar = document.getElementById('progress-bar');
+            const progressText = document.getElementById('progress-text');
+            const correctPassword = '3010090';
 
-            tabs.forEach(tab => {
+            tabButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const targetId = button.getAttribute('data-target');
+                    
+                    tabButtons.forEach(btn => {
+                        btn.classList.remove('tab-active');
+                        btn.classList.add('tab-inactive');
+                    });
+
+                    button.classList.remove('tab-inactive');
+                    button.classList.add('tab-active');
+
+                    sections.forEach(section => {
+                        if (section.id === targetId) {
+                            section.classList.remove('hidden-section');
+                        } else {
+                            section.classList.add('hidden-section');
+                        }
+                    });
+                });
+            });
+
+            codeTabs.forEach(tab => {
                 tab.addEventListener('click', () => {
-                    tabs.forEach(item => {
+                    codeTabs.forEach(item => {
                         item.classList.remove('tab-active');
                         item.classList.add('tab-inactive');
                     });
@@ -401,7 +588,7 @@
 
                     const targetPanelId = tab.getAttribute('data-tab') + '-code';
                     
-                    panels.forEach(panel => {
+                    codePanels.forEach(panel => {
                         if (panel.id === targetPanelId) {
                             panel.classList.remove('hidden');
                         } else {
@@ -409,6 +596,40 @@
                         }
                     });
                 });
+            });
+
+            showSolutionBtn.addEventListener('click', () => {
+                if (solutionContainer.classList.contains('hidden')) {
+                    if (passwordInput.value === correctPassword) {
+                        solutionContainer.classList.remove('hidden');
+                        showSolutionBtn.textContent = 'Ocultar Solución';
+                    } else {
+                        alert('Contraseña incorrecta. Por favor, inténtalo de nuevo.');
+                    }
+                } else {
+                    solutionContainer.classList.add('hidden');
+                    showSolutionBtn.textContent = 'Ver Solución';
+                }
+            });
+
+            let progress = 0;
+            const simulateBtn = document.getElementById('simulate-progress-btn');
+            const progressBarColor = document.getElementById('progress-bar');
+
+            simulateBtn.addEventListener('click', () => {
+                if (progress < 100) {
+                    progress += 20;
+                    if (progress > 100) progress = 100;
+                    
+                    progressBar.style.width = progress + '%';
+                    progressText.textContent = progress + '%';
+
+                    if (progress === 100) {
+                        progressBarColor.style.backgroundColor = '#3b82f6';
+                    } else {
+                        progressBarColor.style.backgroundColor = '#10b981';
+                    }
+                }
             });
         });
     </script>
